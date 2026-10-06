@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles-v2.css?v=2.0.3" />
     <title>打倒情绪小怪兽</title>
   </head>
   <body>
@@ -19,7 +19,7 @@
     <main id="app" class="app-shell">
       <header class="topbar">
         <button id="homeBtn" class="brand" aria-label="回到首页">
-          <span class="brand-mark" aria-hidden="true">⌁</span>
+          <span class="brand-mark" aria-hidden="true">KO</span>
           <span>打倒情绪小怪兽</span>
         </button>
         <nav class="top-actions" aria-label="主要导航">
@@ -30,9 +30,9 @@
 
       <section id="homeView" class="view home-view active" aria-labelledby="homeTitle">
         <div class="home-copy">
-          <p class="eyebrow">私人 · 本地 · 不上传</p>
+          <p class="eyebrow">ARCADE V2 · 本地 · 不上传</p>
           <h1 id="homeTitle">今天想揍点<br /><span>什么东西？</span></h1>
-          <p class="lede">不教育你。把那坨东西放出来，揍到它闭嘴。</p>
+          <p class="lede">不教育你。把那坨东西放出来，清空它的 HP。</p>
         </div>
         <div class="mode-grid">
           <button class="mode-card emotion-card" data-mode="emotion">
@@ -76,14 +76,24 @@
       <section id="battleView" class="view battle-view" aria-label="怪物战斗场">
         <div id="battleHud" class="battle-hud">
           <button class="back-btn battle-back" data-back="home">× 退出</button>
-          <div class="combo-wrap"><span id="comboCount">0</span><small>COMBO</small></div>
-          <div class="gesture-hint" id="gestureHint">点按拳击 · 滑动扇飞 · 长按蓄力 · 拖住甩出去</div>
+          <div id="enemyHud" class="enemy-hud">
+            <div class="enemy-title"><span id="enemyRarity">COMMON</span><strong id="enemyName">小怪兽</strong><em id="enemyPhase"></em></div>
+            <div class="hp-track"><i id="hpFill"></i><b id="hpText">100 / 100</b></div>
+          </div>
+          <div class="combo-wrap"><span id="comboCount">0</span><small>HIT</small></div>
         </div>
+        <div id="combatBanner" class="combat-banner" aria-live="polite"></div>
         <div id="speechBubble" class="speech-bubble" role="status" aria-live="polite"></div>
         <div id="arena" class="arena" aria-label="战斗区域"></div>
+        <div class="gesture-hint" id="gestureHint"><b>点按</b>拳击 <b>横划</b>巴掌 <b>上划</b>升龙 <b>下划</b>砸地 <b>长按</b>蓄力</div>
         <div id="roster" class="roster" aria-label="选择怪物"></div>
+        <div id="finisherPanel" class="finisher-panel" aria-live="assertive">
+          <p>K.O. CONFIRMED</p>
+          <h2>FINISH!</h2>
+          <div id="finisherChoices" class="finisher-choices"></div>
+        </div>
         <div id="battleEnd" class="battle-end" aria-live="polite">
-          <p id="endEyebrow">全场安静</p>
+          <p id="endEyebrow">TARGET ELIMINATED</p>
           <h2 id="endTitle">清净了。</h2>
           <button id="againBtn" class="release-btn">还没爽，再来</button>
           <button id="endHomeBtn" class="text-btn">今天先这样</button>
@@ -133,6 +143,6 @@
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./app-v2.js?v=2.0.3"></script>
   </body>
 </html>

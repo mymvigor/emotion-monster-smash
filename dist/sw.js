@@ -1,5 +1,5 @@
-const CACHE = "monster-smash-v1";
-const ASSETS = ["./","./index.html","./styles.css","./app.js","./monster-brain.js","./db.js","./manifest.webmanifest","./icons/icon.svg","./icons/icon-192.png","./icons/icon-512.png","./icons/apple-touch-icon.png"];
+const CACHE = "monster-smash-v2-20261006-3";
+const ASSETS = ["./","./index.html","./styles-v2.css?v=2.0.3","./app-v2.js?v=2.0.3","./monster-brain-v2.js","./db.js","./manifest.webmanifest","./icons/icon.svg","./icons/icon-192.png","./icons/icon-512.png","./icons/apple-touch-icon.png"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch", event => {

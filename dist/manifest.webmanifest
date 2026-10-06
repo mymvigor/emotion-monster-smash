@@ -1,7 +1,7 @@
 {
   "name": "打倒情绪小怪兽",
   "short_name": "情绪小怪兽",
-  "description": "把脑子里那坨东西拽出来，狠狠干一顿。",
+  "description": "像素街机情绪发泄游戏：把那坨东西打到 HP 归零。",
   "id": "./",
   "start_url": "./",
   "scope": "./",
