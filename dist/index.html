@@ -11,10 +11,10 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./styles-v2.css?v=2.0.3" />
+    <link rel="stylesheet" href="./styles-v2.css?v=3.0.2" />
     <title>打倒情绪小怪兽</title>
   </head>
-  <body>
+  <body data-view="homeView">
     <div class="noise" aria-hidden="true"></div>
     <main id="app" class="app-shell">
       <header class="topbar">
@@ -29,29 +29,27 @@
       </header>
 
       <section id="homeView" class="view home-view active" aria-labelledby="homeTitle">
-        <div class="home-copy">
-          <p class="eyebrow">ARCADE V2 · 本地 · 不上传</p>
-          <h1 id="homeTitle">今天想揍点<br /><span>什么东西？</span></h1>
-          <p class="lede">不教育你。把那坨东西放出来，清空它的 HP。</p>
+        <div class="menu-scene" aria-hidden="true">
+          <div class="pixel-moon"></div><i></i><i></i><i></i><i></i><i></i>
+          <div class="menu-monster m-one"><b></b><b></b></div>
+          <div class="menu-monster m-two"><b></b></div>
         </div>
-        <div class="mode-grid">
+        <div class="game-logo">
+          <small>PRESS YOUR ANGER</small>
+          <h1 id="homeTitle">打倒<br /><span>情绪小怪兽</span></h1>
+          <em>PIXEL SMASH ARCADE</em>
+        </div>
+        <div class="mode-grid game-menu">
           <button class="mode-card emotion-card" data-mode="emotion">
-            <span class="mode-icon" aria-hidden="true">👹</span>
-            <span class="mode-kicker">脑内作乱</span>
-            <strong>我脑子里的东西</strong>
-            <small>现在什么东西在折磨你？</small>
-            <span class="mode-go">放它出来</span>
+            <span class="mode-num">01</span><span class="mode-copy"><strong>脑内作战</strong><small>把折磨你的东西放出来</small></span><span class="mode-caret">▶</span>
           </button>
           <button class="mode-card person-card" data-mode="person">
-            <span class="mode-icon" aria-hidden="true">🤡</span>
-            <span class="mode-kicker">人间奇葩</span>
-            <strong>今天又碰见什么玩意儿了？</strong>
-            <small>阴阳、抢功、双标、越界……</small>
-            <span class="mode-go">变成怪物</span>
+            <span class="mode-num">02</span><span class="mode-copy"><strong>人间奇葩</strong><small>把讨厌的行为变成怪物</small></span><span class="mode-caret">▶</span>
           </button>
         </div>
+        <div class="menu-secondary"><button id="homeDexBtn">▦ 怪物图鉴</button><button id="homeSettingsBtn">⚙ 设置</button></div>
         <button id="installBtn" class="install-tip hidden">＋ 添加到主屏幕</button>
-        <p class="privacy-note">所有内容只留在这台设备。默认不保存你的原话。</p>
+        <p class="press-start">TAP A MODE TO START</p>
       </section>
 
       <section id="inputView" class="view input-view" aria-labelledby="promptTitle">
@@ -69,7 +67,7 @@
           <button id="releaseBtn" class="release-btn" disabled>
             <span>放出来</span><i aria-hidden="true">砰</i>
           </button>
-          <p class="local-only">本地分析 · 不联网 · 不保留原文</p>
+          <p class="local-only">把它说出来，然后开打。</p>
         </div>
       </section>
 
@@ -95,6 +93,12 @@
         <div id="battleEnd" class="battle-end" aria-live="polite">
           <p id="endEyebrow">TARGET ELIMINATED</p>
           <h2 id="endTitle">清净了。</h2>
+          <div class="result-card">
+            <div><small>消灭目标</small><strong id="resultMonster">—</strong></div>
+            <div><small>战斗耗时</small><strong id="resultTime">00:00</strong></div>
+            <div><small>最高连击</small><strong id="resultCombo">0 HIT</strong></div>
+            <div><small>造成伤害</small><strong id="resultDamage">0</strong></div>
+          </div>
           <button id="againBtn" class="release-btn">还没爽，再来</button>
           <button id="endHomeBtn" class="text-btn">今天先这样</button>
         </div>
@@ -141,8 +145,17 @@
         <div><button value="cancel">取消</button><button id="confirmClearBtn" value="confirm" class="danger-btn">全部清空</button></div>
       </form>
     </dialog>
+    <dialog id="settingsDialog" class="confirm-dialog settings-dialog">
+      <form method="dialog">
+        <p class="eyebrow">GAME SETTINGS</p>
+        <h3>设置</h3>
+        <label class="switch-row"><span><strong>音乐与音效</strong><small>关闭后本次和以后都保持静音</small></span><input id="menuSoundToggle" type="checkbox" role="switch" checked /></label>
+        <p class="audio-credit">原创程序化芯片音乐 · 本地播放</p>
+        <div><button value="close">完成</button></div>
+      </form>
+    </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app-v2.js?v=2.0.3"></script>
+    <script type="module" src="./app-v2.js?v=3.0.2"></script>
   </body>
 </html>
