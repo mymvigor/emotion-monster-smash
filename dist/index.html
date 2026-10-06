@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+    <meta name="theme-color" content="#100d1d" />
+    <meta name="description" content="把脑子里那坨东西拽出来，狠狠干一顿。零账户、零上传、可离线。" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="打倒情绪小怪兽" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>打倒情绪小怪兽</title>
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <main id="app" class="app-shell">
+      <header class="topbar">
+        <button id="homeBtn" class="brand" aria-label="回到首页">
+          <span class="brand-mark" aria-hidden="true">⌁</span>
+          <span>打倒情绪小怪兽</span>
+        </button>
+        <nav class="top-actions" aria-label="主要导航">
+          <button id="soundBtn" class="icon-btn" aria-label="静音" aria-pressed="false">◖))</button>
+          <button id="dexBtn" class="icon-btn" aria-label="打开怪物图鉴">图鉴</button>
+        </nav>
+      </header>
+
+      <section id="homeView" class="view home-view active" aria-labelledby="homeTitle">
+        <div class="home-copy">
+          <p class="eyebrow">私人 · 本地 · 不上传</p>
+          <h1 id="homeTitle">今天想揍点<br /><span>什么东西？</span></h1>
+          <p class="lede">不教育你。把那坨东西放出来，揍到它闭嘴。</p>
+        </div>
+        <div class="mode-grid">
+          <button class="mode-card emotion-card" data-mode="emotion">
+            <span class="mode-icon" aria-hidden="true">👹</span>
+            <span class="mode-kicker">脑内作乱</span>
+            <strong>我脑子里的东西</strong>
+            <small>现在什么东西在折磨你？</small>
+            <span class="mode-go">放它出来</span>
+          </button>
+          <button class="mode-card person-card" data-mode="person">
+            <span class="mode-icon" aria-hidden="true">🤡</span>
+            <span class="mode-kicker">人间奇葩</span>
+            <strong>今天又碰见什么玩意儿了？</strong>
+            <small>阴阳、抢功、双标、越界……</small>
+            <span class="mode-go">变成怪物</span>
+          </button>
+        </div>
+        <button id="installBtn" class="install-tip hidden">＋ 添加到主屏幕</button>
+        <p class="privacy-note">所有内容只留在这台设备。默认不保存你的原话。</p>
+      </section>
+
+      <section id="inputView" class="view input-view" aria-labelledby="promptTitle">
+        <button class="back-btn" data-back="home">‹ 返回</button>
+        <div class="input-card">
+          <p id="modeBadge" class="mode-badge">脑内作乱</p>
+          <h2 id="promptTitle">现在什么东西在折磨你？</h2>
+          <div class="textarea-wrap">
+            <textarea id="ventInput" maxlength="280" enterkeyhint="done" placeholder="随便说，不用组织语言，也不用文明……"></textarea>
+            <span id="charCount">0 / 280</span>
+          </div>
+          <div id="exampleChips" class="chips" aria-label="示例">
+            <button>怕别人超过我</button><button>脑子一直瞎想</button><button>觉得自己不够好</button>
+          </div>
+          <button id="releaseBtn" class="release-btn" disabled>
+            <span>放出来</span><i aria-hidden="true">砰</i>
+          </button>
+          <p class="local-only">本地分析 · 不联网 · 不保留原文</p>
+        </div>
+      </section>
+
+      <section id="battleView" class="view battle-view" aria-label="怪物战斗场">
+        <div id="battleHud" class="battle-hud">
+          <button class="back-btn battle-back" data-back="home">× 退出</button>
+          <div class="combo-wrap"><span id="comboCount">0</span><small>COMBO</small></div>
+          <div class="gesture-hint" id="gestureHint">点按拳击 · 滑动扇飞 · 长按蓄力 · 拖住甩出去</div>
+        </div>
+        <div id="speechBubble" class="speech-bubble" role="status" aria-live="polite"></div>
+        <div id="arena" class="arena" aria-label="战斗区域"></div>
+        <div id="roster" class="roster" aria-label="选择怪物"></div>
+        <div id="battleEnd" class="battle-end" aria-live="polite">
+          <p id="endEyebrow">全场安静</p>
+          <h2 id="endTitle">清净了。</h2>
+          <button id="againBtn" class="release-btn">还没爽，再来</button>
+          <button id="endHomeBtn" class="text-btn">今天先这样</button>
+        </div>
+      </section>
+
+      <section id="dexView" class="view dex-view" aria-labelledby="dexTitle">
+        <button class="back-btn" data-back="home">‹ 返回</button>
+        <div class="dex-header">
+          <p class="eyebrow">LOCAL BESTIARY</p>
+          <h2 id="dexTitle">怪物图鉴</h2>
+          <p>被你揍过的老熟人，都在这里。</p>
+        </div>
+        <div id="dexList" class="dex-list"></div>
+        <div id="dexEmpty" class="dex-empty">
+          <div aria-hidden="true">◉﹏◉</div>
+          <h3>还没有老熟人</h3>
+          <p>先去放一只出来。</p>
+        </div>
+        <div class="settings-card">
+          <label class="switch-row">
+            <span><strong>保留原始输入</strong><small>默认关闭，更少地保存隐私信息</small></span>
+            <input id="saveRawToggle" type="checkbox" role="switch" />
+          </label>
+          <button id="clearDataBtn" class="danger-btn">清空全部本地数据</button>
+        </div>
+      </section>
+
+      <section id="safetyView" class="view safety-view" aria-labelledby="safetyTitle">
+        <div class="safety-card">
+          <div class="safety-icon" aria-hidden="true">●</div>
+          <p class="eyebrow">先别一个人扛</p>
+          <h2 id="safetyTitle">你现在的安全最重要。</h2>
+          <p>如果你可能马上伤害自己，请立刻联系身边可信任的人，或拨打当地紧急服务电话 <a href="tel:110">110</a> / <a href="tel:120">120</a>。</p>
+          <p>也可以联系北京心理危机研究与干预中心：<a href="tel:8008101117">800-810-1117</a>（座机）或 <a href="tel:01082951332">010-8295-1332</a>。</p>
+          <button id="safetyHomeBtn" class="release-btn">回到首页</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="confirmDialog" class="confirm-dialog">
+      <form method="dialog">
+        <h3>清空所有怪物？</h3>
+        <p>图鉴、出现历史和设置都会从这台设备删除，无法恢复。</p>
+        <div><button value="cancel">取消</button><button id="confirmClearBtn" value="confirm" class="danger-btn">全部清空</button></div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
