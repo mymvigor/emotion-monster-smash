@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./styles-v4.css?v=4.0.0" />
+    <link rel="stylesheet" href="./styles-v41.css?v=4.1.0" />
     <title>打倒情绪小怪兽</title>
   </head>
   <body data-view="homeView">
@@ -30,9 +30,10 @@
 
       <section id="homeView" class="view home-view active" aria-labelledby="homeTitle">
         <div class="menu-scene" aria-hidden="true">
-          <div class="pixel-moon"></div><i></i><i></i><i></i><i></i><i></i>
-          <div class="menu-monster m-one"><b></b><b></b></div>
-          <div class="menu-monster m-two"><b></b></div>
+          <div class="home-far"><div class="pixel-moon"></div><i></i><i></i><i></i><i></i><i></i><span class="skyline"></span></div>
+          <div class="home-mid"><span class="home-pipe"></span><span class="home-vending"></span><span class="home-door"></span><span class="home-sign">SMASH</span><span class="home-bin"></span><span class="home-sewer"></span><div class="menu-monster m-one"><b></b><b></b></div><div class="menu-monster m-two"><b></b></div></div>
+          <div class="home-foreground"><span></span><span></span><span></span></div>
+          <div class="living-events"></div>
         </div>
         <div class="game-logo">
           <small>PRESS YOUR ANGER</small>
@@ -48,8 +49,8 @@
           </button>
         </div>
         <div class="director-switch" id="directorSwitch" aria-label="怪物生成方式">
-          <button data-director="offline" class="active"><strong>OFFLINE</strong><small>本地导演</small></button>
-          <button data-director="ai"><strong>AI DIRECTOR</strong><small>精准模式</small></button>
+          <button data-director="offline" class="active"><strong>OFFLINE ⚡</strong><small>本地导演</small></button>
+          <button data-director="ai"><strong>AI ✦</strong><small>精准导演</small></button>
         </div>
         <p id="directorPrivacy" class="director-privacy">全程离线 · 免费 · 原文默认不保存</p>
         <p id="todayChaos" class="today-chaos"></p>
@@ -92,6 +93,7 @@
         <div id="combatBanner" class="combat-banner" aria-live="polite"></div>
         <div id="speechBubble" class="speech-bubble" role="status" aria-live="polite"></div>
         <div id="arena" class="arena" aria-label="战斗区域"></div>
+        <div id="weaponStatus" class="weapon-status" aria-live="polite"></div>
         <div class="gesture-hint" id="gestureHint"><b>点按</b>拳击 <b>横划</b>巴掌 <b>上划</b>升龙 <b>下划</b>砸地 <b>长按</b>蓄力</div>
         <div id="roster" class="roster" aria-label="选择怪物"></div>
         <div id="releaseHud" class="release-hud">
@@ -186,6 +188,6 @@
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app-v4.js?v=4.0.0"></script>
+    <script type="module" src="./app-v4.js?v=4.1.0"></script>
   </body>
 </html>

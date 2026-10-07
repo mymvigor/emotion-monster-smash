@@ -1,10 +1,10 @@
-const CACHE="monster-smash-v4-20261007-2";
+const CACHE="monster-smash-v41-20261007-1";
 const CORE=[
-  "./","./index.html","./styles-v4.css?v=4.0.0","./styles-v2.css?v=3.0.2","./app-v4.js?v=4.0.0",
+  "./","./index.html","./styles-v41.css?v=4.1.0","./styles-v4.css?v=4.0.0","./styles-v2.css?v=3.0.2","./app-v4.js?v=4.1.0",
   "./monster-brain-v3.js","./audio-manager.js","./pixel-fx.js","./db.js",
   "./v4/utils.js","./v4/semantic-matcher.js","./v4/mutation-engine.js","./v4/arena-generator.js",
   "./v4/story-director.js","./v4/local-director.js","./v4/ai-director-adapter.js","./v4/monster-library.js",
-  "./v4/encounter-director.js","./v4/combat-engine.js","./v4/dialogue-director.js","./v4/monster-renderer.js","./v4/attract-mode.js",
+  "./v4/encounter-director.js","./v4/combat-engine.js","./v4/dialogue-director.js","./v4/monster-renderer.js","./v4/attract-mode.js","./v4/weapon-director.js","./v4/camera-director.js",
   "./manifest.webmanifest","./icons/icon.svg","./icons/icon-192.png",
   "./icons/icon-512.png","./icons/apple-touch-icon.png"
 ];
