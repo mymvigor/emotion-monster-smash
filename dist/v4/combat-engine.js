@@ -1,0 +1,26 @@
+import{clamp,hash,rng}from"./utils.js";
+
+export const ATTACKS={
+  punch:{min:5,max:8,power:.34,hitStop:34,knockback:.25,identity:"snap"},
+  slap:{min:11,max:16,power:.58,hitStop:58,knockback:.72,identity:"whip"},
+  uppercut:{min:16,max:23,power:.74,hitStop:82,knockback:.52,identity:"lift"},
+  smash:{min:18,max:27,power:.86,hitStop:98,knockback:.38,identity:"ground"},
+  slam:{min:22,max:31,power:.94,hitStop:108,knockback:.95,identity:"throw"},
+  spin:{min:24,max:34,power:1,hitStop:115,knockback:1.18,identity:"spin"},
+  heavy:{min:28,max:42,power:1,hitStop:145,knockback:1.45,identity:"slow"},
+  rush:{min:3,max:5,power:.38,hitStop:22,knockback:.12,identity:"rush"},
+  weapon:{min:26,max:38,power:1,hitStop:125,knockback:1.3,identity:"weapon"}
+};
+export const phaseFor=ratio=>ratio>.65?"DEFIANT":ratio>.25?"CRACKED":"BREAKDOWN";
+export class CombatEngine{
+  constructor(encounter,options={}){this.encounter=encounter;this.random=rng(hash(`${encounter.seed}|combat`));this.now=options.now||(()=>performance.now());this.maxHp=encounter.monsterDNA.maxHp;this.hp=this.maxHp;this.phase="DEFIANT";this.mode="battle";this.combo=0;this.maxCombo=0;this.totalDamage=0;this.release=0;this.releaseStartedAt=0;this.canFinish=false;this.fullRelease=false;this.stylePoints=0;this.attackTypes=new Set;this.history=[];this.armor=encounter.symbolicArmorDNA.map(x=>({...x}));this.lastHitAt=0;this.wallHits=0;this.secrets=[];this.rage=false;this.finished=false}
+  attack(type,context={}){if(this.finished)return{ignored:true};const cfg=ATTACKS[type]||ATTACKS.punch,now=this.now();if(now-this.lastHitAt>1450)this.combo=0;this.lastHitAt=now;this.combo++;this.maxCombo=Math.max(this.maxCombo,this.combo);this.history.push({type,dir:Math.sign(context.vector?.x||0),wall:Boolean(context.wall),at:now});this.history=this.history.filter(x=>now-x.at<2400).slice(-12);const critical=context.charge>=.96||this.random()<Math.min(.23,.055+this.combo*.006),variety=!this.attackTypes.has(type);this.attackTypes.add(type);const secret=this.detectSecret(type,context),event={type,config:cfg,combo:this.combo,critical,secret,phaseBefore:this.phase,armorBroken:null,break:false,releaseGain:0,fullRelease:false};if(this.mode==="battle"){let damage=Math.round((cfg.min+this.random()*(cfg.max-cfg.min))*(1+Math.min(.24,this.combo*.009))*(critical?1.3:1));if(type==="heavy")damage=Math.min(55,Math.round(damage*(.72+(context.charge||.35)*.42)));if(this.armor.some(x=>x.state==="intact"))damage=Math.round(damage*.9);this.hp=Math.max(0,this.hp-damage);this.totalDamage+=damage;event.damage=damage;this.updatePhase(event);if(this.hp===0)this.enterRelease(event)}else{event.damage=0;let gain=2+(variety?10:0)+(critical?8:0)+(context.wall?11:0)+(context.arenaChanged?7:0)+(type==="weapon"?18:0)+(secret?22:0);if(this.combo===10||this.combo===20||this.combo===30)gain+=8;this.release=clamp(this.release+gain,0,100);event.releaseGain=gain;this.stylePoints+=gain+(variety?5:0);if(this.release>=100&&!this.fullRelease){this.fullRelease=true;event.fullRelease=true}this.canFinish=this.fullRelease||now-this.releaseStartedAt>=8000||this.release>=50}if(context.wall)this.wallHits++;this.stylePoints+=variety?7:2;this.stylePoints+=critical?6:0;this.rage=this.combo>=30;event.hp=this.hp;event.phase=this.mode==="battle"?this.phase:this.fullRelease?"FULL RELEASE":"RELEASE";event.release=this.release;event.canFinish=this.canFinish;event.rage=this.rage;event.style=this.style();return event}
+  updatePhase(event){const next=phaseFor(this.hp/this.maxHp);if(next!==this.phase){this.phase=next;event.phaseChanged=true;const index=next==="CRACKED"?0:next==="BREAKDOWN"?1:-1;if(index>=0){const target=this.armor.filter(x=>x.state==="intact")[0];if(target){target.state="broken";event.armorBroken=target}}}}
+  enterRelease(event){this.mode="release";this.releaseStartedAt=this.now();this.phase="RELEASE";event.break=true;this.combo=Math.max(this.combo,1)}
+  detectSecret(type,context){const recent=this.history.slice(-5);let id=null;if(recent.length>=4&&recent.slice(-4).every(x=>x.type==="slap")&&recent.slice(-4).every((x,i,a)=>i===0||x.dir!==a[i-1].dir))id="mirror-slap";else if(this.wallHits>=2&&context.wall)id="wall-echo";else if(this.combo>=30&&type==="heavy")id="rage-crater";else if(type==="weapon"&&context.propType==="trophy")id="return-the-credit";if(id&&!this.secrets.includes(id)){this.secrets.push(id);return id}return null}
+  tick(){if(this.mode==="release")this.canFinish=this.fullRelease||this.now()-this.releaseStartedAt>=8000||this.release>=50;return{mode:this.mode,release:this.release,canFinish:this.canFinish,fullRelease:this.fullRelease,elapsed:this.mode==="release"?this.now()-this.releaseStartedAt:0}}
+  style(){return this.stylePoints>=160?"CHAOS":this.stylePoints>=110?"S":this.stylePoints>=70?"A":this.stylePoints>=36?"B":"C"}
+  finish(){if(this.mode!=="release"||!this.canFinish)return false;this.mode="finishing";this.finished=true;return true}
+  snapshot(){return{hp:this.hp,maxHp:this.maxHp,phase:this.phase,mode:this.mode,combo:this.combo,maxCombo:this.maxCombo,totalDamage:this.totalDamage,release:this.release,canFinish:this.canFinish,fullRelease:this.fullRelease,style:this.style(),armor:this.armor.map(x=>({...x})),secrets:[...this.secrets]}}
+  destroy(){this.history.length=0;this.attackTypes.clear();this.armor.length=0;this.encounter=null}
+}

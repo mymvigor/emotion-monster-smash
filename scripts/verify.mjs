@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { analyzeText, generateMonsters, hasImmediateSafetyRisk, understand } from "../dist/monster-brain-v3.js";
 
-const required = ["index.html","styles-v2.css","app-v2.js","monster-brain-v3.js","audio-manager.js","pixel-fx.js","db.js","sw.js","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
+const required = ["index.html","styles-v4.css","app-v4.js","monster-brain-v3.js","audio-manager.js","pixel-fx.js","db.js","sw.js","manifest.webmanifest","icons/icon.svg","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
 for (const file of required) {
   if (!fs.existsSync(new URL(`../dist/${file}`, import.meta.url))) throw new Error(`Missing ${file}`);
 }
@@ -42,7 +42,7 @@ if (silhouettes.size < 2 || variants.some(m=>!m.category.includes("performative"
 const audioFiles = fs.readdirSync(new URL("../dist/assets/audio", import.meta.url), {recursive:true}).filter(file=>file.endsWith(".wav"));
 if (audioFiles.length !== 46) throw new Error(`Expected 46 local audio files, got ${audioFiles.length}`);
 const sw = fs.readFileSync(new URL("../dist/sw.js", import.meta.url),"utf8");
-if (!sw.includes("monster-smash-v3") || !sw.includes("assets/audio") || !sw.includes("monster-brain-v3.js")) throw new Error("V3 offline cache is incomplete");
+if (!sw.includes("monster-smash-v4") || !sw.includes("assets/audio") || !sw.includes("v4/encounter-director.js")) throw new Error("V4 offline cache is incomplete");
 const html = fs.readFileSync(new URL("../dist/index.html", import.meta.url),"utf8");
 for (const forbidden of ["IndexedDB","GitHub Pages","零成本运行","本地运行"]) if (html.includes(forbidden)) throw new Error(`Homepage contains technical copy: ${forbidden}`);
-console.log("Verified: 8 Chinese semantic cases, diverse Pixel DNA, 46 local audio files, offline cache, Boss, safety gate");
+console.log("Verified: legacy compatibility, 8 Chinese semantic cases, 46 local audio files, V4 offline cache, Boss, safety gate");

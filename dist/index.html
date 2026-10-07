@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./styles-v2.css?v=3.0.2" />
+    <link rel="stylesheet" href="./styles-v4.css?v=4.0.0" />
     <title>打倒情绪小怪兽</title>
   </head>
   <body data-view="homeView">
@@ -47,6 +47,12 @@
             <span class="mode-num">02</span><span class="mode-copy"><strong>人间奇葩</strong><small>把讨厌的行为变成怪物</small></span><span class="mode-caret">▶</span>
           </button>
         </div>
+        <div class="director-switch" id="directorSwitch" aria-label="怪物生成方式">
+          <button data-director="offline" class="active"><strong>OFFLINE</strong><small>本地导演</small></button>
+          <button data-director="ai"><strong>AI DIRECTOR</strong><small>精准模式</small></button>
+        </div>
+        <p id="directorPrivacy" class="director-privacy">全程离线 · 免费 · 原文默认不保存</p>
+        <p id="todayChaos" class="today-chaos"></p>
         <div class="menu-secondary"><button id="homeDexBtn">▦ 怪物图鉴</button><button id="homeSettingsBtn">⚙ 设置</button></div>
         <button id="installBtn" class="install-tip hidden">＋ 添加到主屏幕</button>
         <p class="press-start">TAP A MODE TO START</p>
@@ -67,7 +73,7 @@
           <button id="releaseBtn" class="release-btn" disabled>
             <span>放出来</span><i aria-hidden="true">砰</i>
           </button>
-          <p class="local-only">把它说出来，然后开打。</p>
+          <p id="inputPrivacy" class="local-only">把它说出来，然后开打。OFFLINE 模式不会发出 AI 请求。</p>
         </div>
       </section>
 
@@ -78,13 +84,20 @@
             <div class="enemy-title"><span id="enemyRarity">COMMON</span><strong id="enemyName">小怪兽</strong><em id="enemyPhase"></em></div>
             <div class="hp-track"><i id="hpFill"></i><b id="hpText">100 / 100</b></div>
           </div>
+          <div class="battle-ranks"><b id="phaseLabel">DEFIANT</b><span id="styleRank">C</span></div>
           <div class="combo-wrap"><span id="comboCount">0</span><small>HIT</small></div>
         </div>
+        <div id="armorHud" class="armor-hud"></div>
+        <div id="mutationBadge" class="mutation-badge">CLASSIC</div>
         <div id="combatBanner" class="combat-banner" aria-live="polite"></div>
         <div id="speechBubble" class="speech-bubble" role="status" aria-live="polite"></div>
         <div id="arena" class="arena" aria-label="战斗区域"></div>
         <div class="gesture-hint" id="gestureHint"><b>点按</b>拳击 <b>横划</b>巴掌 <b>上划</b>升龙 <b>下划</b>砸地 <b>长按</b>蓄力</div>
         <div id="roster" class="roster" aria-label="选择怪物"></div>
+        <div id="releaseHud" class="release-hud">
+          <div><strong id="releaseText">释放 0%</strong><span><i id="releaseFill"></i></span></div>
+          <button id="finishNowBtn" disabled>继续打它…</button>
+        </div>
         <div id="finisherPanel" class="finisher-panel" aria-live="assertive">
           <p>K.O. CONFIRMED</p>
           <h2>FINISH!</h2>
@@ -98,6 +111,9 @@
             <div><small>战斗耗时</small><strong id="resultTime">00:00</strong></div>
             <div><small>最高连击</small><strong id="resultCombo">0 HIT</strong></div>
             <div><small>造成伤害</small><strong id="resultDamage">0</strong></div>
+            <div><small>战斗风格</small><strong id="resultStyle">C</strong></div>
+            <div><small>释放程度</small><strong id="resultRelease">0%</strong></div>
+            <div><small>场景破坏</small><strong id="resultArena">0 件</strong></div>
           </div>
           <button id="againBtn" class="release-btn">还没爽，再来</button>
           <button id="endHomeBtn" class="text-btn">今天先这样</button>
@@ -110,7 +126,9 @@
           <p class="eyebrow">LOCAL BESTIARY</p>
           <h2 id="dexTitle">怪物图鉴</h2>
           <p>被你揍过的老熟人，都在这里。</p>
+          <small id="dexStats">0 条本地记录</small>
         </div>
+        <div class="dex-tabs" role="tablist"><button data-dex-tab="history" class="active">遭遇</button><button data-dex-tab="ai">AI 库</button><button data-dex-tab="nemesis">宿敌</button><button data-dex-tab="discoveries">发现</button></div>
         <div id="dexList" class="dex-list"></div>
         <div id="dexEmpty" class="dex-empty">
           <div aria-hidden="true">◉﹏◉</div>
@@ -154,8 +172,20 @@
         <div><button value="close">完成</button></div>
       </form>
     </dialog>
+    <dialog id="aiBridgeDialog" class="confirm-dialog ai-bridge-dialog">
+      <form method="dialog">
+        <p class="eyebrow">AI DIRECTOR · MANUAL BRIDGE</p>
+        <h3>调用一次 ChatGPT</h3>
+        <p>当前静态 PWA 不保存账号或密钥。复制提示词到 ChatGPT，再把它返回的 JSON 粘贴回来；以后相似情绪会直接复用本地 AI 怪物库。</p>
+        <label>1. 复制导演提示词<textarea id="aiPrompt" readonly></textarea></label>
+        <button id="copyPromptBtn" type="button">复制提示词</button>
+        <label>2. 粘贴 JSON<textarea id="aiJson" placeholder="{ &quot;semanticCore&quot;: […] }"></textarea></label>
+        <p id="aiError" class="ai-error" aria-live="polite"></p>
+        <div><button value="cancel">取消</button><button id="aiOfflineBtn" type="button">改用离线</button><button id="aiImportBtn" type="button" class="release-btn">存入本地并开打</button></div>
+      </form>
+    </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app-v2.js?v=3.0.2"></script>
+    <script type="module" src="./app-v4.js?v=4.0.0"></script>
   </body>
 </html>
